@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wayne Enterprise</title>
+<style>
+html, body {
+    margin:0; padding:0; height:100%; font-family: Arial, sans-serif;
+    overflow-x:hidden;
+}
+
+/* Canvas for bats */
+canvas {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;
+}
+
+/* Intro */
+#intro {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    display:flex; justify-content:center; align-items:center;
+    font-size:5em; color:#00ffff; background:#000;
+    z-index:10; opacity:1; transition: opacity 3s ease;
+}
+
+/* Main content */
+#main {
+    opacity:0; transition: opacity 1s ease;
+    position:relative; z-index:1;
+    background:#f4f6f8; color:#000;
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+button {
+    background: #0a1f44;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button:hover { background: #163b7a; }
+
+/* Styling main page */
+header { background:#0a1f44; color:white; padding:20px; text-align:center;}
+section { padding:20px; max-width:900px; margin:auto;}
+.card { background:white; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+button { background:#0a1f44; color:white; border:none; padding:10px 20px; cursor:pointer; border-radius:5px;}
+button:hover { background:#163b7a; }
+.stat { font-size:18px; margin:10px 0; }
+footer { background:#0a1f44; color:white; text-align:center; padding:10px; }
+.link { display:inline-block; color:#0a1f44; cursor:pointer; margin:15px; font-size:1.2em; text-decoration:underline;}
+.link:hover { color:#163b7a;}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div id="intro">🧛Wayne Enterprise</div>
+
+<div id="main">
+<header>
+<h1>LONG-TERM PRIVATE INCOME PROJECT</h1>
+<p>Operator: Trading as Wayne Enterprise</p>
+</header>
+
+<section>
+<div class="card">
+<h2>How It Works</h2>
+<p>Investor contributes <strong>KSh 11,000</strong></p>
+<p>Daily return: <strong>KSh 50</strong></p>
+<p>Duration: <strong>420 daily payments</strong></p>
+<p>Agreement terminates automatically after payment 420 consecutive daily payment</p>
+</div>
+
+
+    <div class="card">
+      <h2>Investor Dashboard </h2>
+      <div class="stat">Daily Payment: KSh <span id="daily">50</span></div>
+      <div class="stat">Total Payments Required: <span id="total">420</span></div>
+      <div class="stat">Payments Made: <span id="made">0</span></div>
+      <div class="stat">Payments Remaining: <span id="remaining">420</span></div>
+      <div class="stat">Total Paid So Far: KSh <span id="paid">0</span></div>
+      <br>
+      <button onclick="makePayment()">Record Daily Payment</button>
+      <button onclick="resetPayments()">Reset</button>
+    </div>
+
+    <div class="card">
+      <h2>Key Terms</h2>
+      <p>• Non-interference by investor</p>
+      <p>• Operator retains full control</p>
+      <p>• Referrals permitted without disclosure of confidential details</p>
+      <p>• This is a private income project</p>
+    </div>
+
+<div class="card">
+<h2>Get in Touch</h2>
+<div class="link" onclick="contact()">Contact Us</div>
+<div class="link" onclick="showAbout()">About</div>
+<p id="aboutText" style="display:none; margin-top:10px; font-size:1em; color:#555;">
+Wayne Enterprise is a visionary company dedicated to delivering high-quality projects.
+</p>
+</div>
+</section>
+
+<footer>
+<p>© 2026 Wayne Enterprise | Private Income Project</p>
+</footer>
+</div>
+
+<script>
+
+let paymentsMade = 0;
+const dailyPayment = 50;
+const totalPayments = 420;
+
+function makePayment() {
+    if (paymentsMade < totalPayments) {
+        paymentsMade++;
+        updateDashboard();
+    } else {
+        alert("Agreement completed. 420 payments reached.");
+    }
+}
+
+function resetPayments() {
+    paymentsMade = 0;
+    updateDashboard();
+}
+
+function updateDashboard() {
+    document.getElementById("made").innerText = paymentsMade;
+    document.getElementById("remaining").innerText = totalPayments - paymentsMade;
+    document.getElementById("paid").innerText = paymentsMade * dailyPayment;
+}
+
+/* Contact/About links */
+function contact(){
+    const email="kariukiwayne21@gmail.com";
+    const whatsapp="https://wa.me/254104285464";
+    if(confirm("Send Email? OK=Email, Cancel=WhatsApp")) window.location.href=`mailto:${email}`;
+    else window.open(whatsapp,"_blank");
+}
+function showAbout(){
+    const about=document.getElementById("aboutText");
+    about.style.display = about.style.display==="none"?"block":"none";
+}
+
+/* RGB Glowing Bats */
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+let w = canvas.width = window.innerWidth, h = canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => { 
+    w = canvas.width = window.innerWidth; 
+    h = canvas.height = window.innerHeight; 
+});
+
+let bats = [];
+for (let i = 0; i < 60; i++) {
+    bats.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        speed: 2 + Math.random() * 2,
+        size: 12 + Math.random() * 8,
+        colorPhase: Math.random() * 360 // for rainbow effect
+    });
+}
+
+function drawBat(b) {
+    const color = `hsl(${b.colorPhase}, 100%, 50%)`;
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+    ctx.lineTo(b.x - b.size / 2, b.y - b.size / 2);
+    ctx.lineTo(b.x + b.size / 2, b.y - b.size / 2);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    bats.forEach(b => {
+        b.x += b.speed;
+        b.colorPhase += 1; // animate the hue
+        if (b.x > w) b.x = 0;
+        drawBat(b);
+    });
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+/* Intro fade out */
+setTimeout(()=>{
+    const intro=document.getElementById("intro");
+    const main=document.getElementById("main");
+    intro.style.opacity=0;
+    setTimeout(()=>{
+        intro.style.display="none";
+        main.style.opacity=1;
+    },3000);
+},3000);
+</script>
+
+</body>
+</html>
